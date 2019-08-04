@@ -22,9 +22,29 @@ var server = http.createServer(function(request, response){
   console.log('方方说：含查询字符串的路径\n' + pathWithQuery)
 
   if(path === '/'){
-    response.statusCode = 200
+    var string = fs.readFileSync('./index.html', 'utf8')
+    var amount = fs.readFileSync('./db', 'utf8') //100
+    
+    //将 &&&amount&&& 替换成 db中的数据
+    string = string.replace('&&&amount&&&', amount) 
     response.setHeader('Content-Type', 'text/html;charset=utf-8')
-    response.write('哈哈哈')
+    response.write(string)
+    response.statusCode = 200
+    response.end()
+  }else if(path === '/pay'){
+    var amount = fs.readFileSync('./db', 'utf8')
+    var newAmount = amount - 1
+
+    //模拟失败
+    if(Math.random()>0.5){
+      fs.writeFileSync('./db', newAmount)
+      response.setHeader('Content-Type', 'image/jpg')
+      response.statusCode = 200
+      response.write(fs.readFileSync('./black.jpg'))
+    }else{
+      response.statusCode = 400
+      response.write('fail')
+    }
     response.end()
   }else{
     response.statusCode = 404
