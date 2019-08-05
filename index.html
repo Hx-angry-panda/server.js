@@ -8,29 +8,44 @@
     <h5>您的账户余额是 <span id="amount">&&&amount&&&</span></h5> 
     <!-- &&&amount&&& 是占位符 -->
     <button id="button">打钱</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         button.addEventListener('click', (e)=>{
-            //用 script 发请求
-            let script = document.createElement('script')
-            let functionName = 'frank'+parseInt(Math.random()*100000,10) //生成随机的函数名
-            window[functionName] = function (result) {
-                if (result === 'success') {
-                    amount.innerText = amount.innerText - 1
-                } else {
-
+            $.ajax({
+                url: "http://jack.com:8002/pay",
+                dataType: "jsonp",
+                success: function (response) {
+                    if(response === 'success'){
+                        amount.innerText = amount.innerText - 1
+                    }
                 }
-            }
-            script.src = 'http://jack.com:8002/pay?callback=' + functionName
-            document.body.appendChild(script)
-            script.onload = function(e){
-                e.currentTarget.remove()
-                delete window[functionName] //调用完之后删除，保证每次调用的函数名都不同
-            }
-            script.onerror = function(e){
-                alert('fail')
-                e.currentTarget.remove()
-                delete window[functionName] //调用失败也要删除，保证每次调用的函数名都不同
-            }
+            });
+            
+            
+            
+            
+     
+            // //用 script 发请求
+            // let script = document.createElement('script')
+            // let functionName = 'frank'+parseInt(Math.random()*100000,10) //生成随机的函数名
+            // window[functionName] = function (result) {
+            //     if (result === 'success') {
+            //         amount.innerText = amount.innerText - 1
+            //     } else {
+
+            //     }
+            // }
+            // script.src = 'http://jack.com:8002/pay?callback=' + functionName
+            // document.body.appendChild(script)
+            // script.onload = function(e){
+            //     e.currentTarget.remove()
+            //     delete window[functionName] //调用完之后删除，保证每次调用的函数名都不同
+            // }
+            // script.onerror = function(e){
+            //     alert('fail')
+            //     e.currentTarget.remove()
+            //     delete window[functionName] //调用失败也要删除，保证每次调用的函数名都不同
+            // }
             
             
             
