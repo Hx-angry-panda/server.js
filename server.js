@@ -40,7 +40,7 @@ var server = http.createServer(function(request, response){
       fs.writeFileSync('./db', newAmount)
       response.setHeader('Content-Type', 'application/javascript')
       response.statusCode = 200
-      response.write(`amount.innerText = amount.innerText - 1 `)
+      response.write(`${query.callback}.call(undefined,'success')`)
     }else{
       response.statusCode = 400
       response.write('fail')

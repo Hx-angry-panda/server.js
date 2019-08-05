@@ -12,14 +12,24 @@
         button.addEventListener('click', (e)=>{
             //用 script 发请求
             let script = document.createElement('script')
-            script.src = '/pay'
+            let functionName = 'frank'+parseInt(Math.random()*100000,10) //生成随机的函数名
+            window[functionName] = function (result) {
+                if (result === 'success') {
+                    amount.innerText = amount.innerText - 1
+                } else {
+
+                }
+            }
+            script.src = 'http://jack.com:8002/pay?callback=' + functionName
             document.body.appendChild(script)
             script.onload = function(e){
                 e.currentTarget.remove()
+                delete window[functionName] //调用完之后删除，保证每次调用的函数名都不同
             }
             script.onerror = function(e){
                 alert('fail')
                 e.currentTarget.remove()
+                delete window[functionName] //调用失败也要删除，保证每次调用的函数名都不同
             }
             
             
