@@ -22,29 +22,31 @@ var server = http.createServer(function(request, response){
   console.log('方方说：含查询字符串的路径\n' + pathWithQuery)
 
   if(path === '/'){
-    var string = fs.readFileSync('./index.html', 'utf8')
-    var amount = fs.readFileSync('./db', 'utf8') //100
-    
-    //将 &&&amount&&& 替换成 db中的数据
-    string = string.replace('&&&amount&&&', amount) 
+    let string = fs.readFileSync('./index.html', 'utf8')
+    response.statusCode = 200
     response.setHeader('Content-Type', 'text/html;charset=utf-8')
     response.write(string)
-    response.statusCode = 200
     response.end()
-  }else if(path === '/pay'){
-    var amount = fs.readFileSync('./db', 'utf8')
-    var newAmount = amount - 1
-
-    //模拟失败
-    if(Math.random()>0.5){
-      fs.writeFileSync('./db', newAmount)
-      response.setHeader('Content-Type', 'application/javascript')
-      response.statusCode = 200
-      response.write(`${query.callback}.call(undefined,'success')`)
-    }else{
-      response.statusCode = 400
-      response.write('fail')
+  }else if(path === '/main.js'){
+    let string = fs.readFileSync('./main.js', 'utf8')
+    response.statusCode = 200
+    response.setHeader('Content-Type', 'text/javascript;charset=utf-8')
+    response.write(string)
+    response.end()
+  }else if(path === '/xxx'){
+    response.statusCode = 200
+    response.setHeader('Content-Type', 'text/json;charset=utf-8')
+    response.setHeader('Access-Control-Allow-Origin', 'http://jack.com:8002')
+    response.write(` 
+    {
+      "note":{
+        "to": "Tove",
+        "from": "Jani",
+        "heading": "Reminder",
+        "body": "Don't forget me this weekend!"
+      }
     }
+    `)
     response.end()
   }else{
     response.statusCode = 404
@@ -58,5 +60,3 @@ var server = http.createServer(function(request, response){
 
 server.listen(port)
 console.log('监听 ' + port + ' 成功\n请用在空中转体720度然后用电饭煲打开 http://localhost:' + port)
-
-
